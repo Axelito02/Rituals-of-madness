@@ -4,11 +4,35 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Rituals of madness</title>
     <link rel="stylesheet" href="./src/style.css">
+    <link rel="shortcut icon" href="./src/assets/Img/FaviconOjo.png" type="image/x-icon">
     <script src="./src/index.js" type="module"></script>
 </head>
 <body>
 
-<main id="main-container">
+<div id="discussion-time">
+    <div class="wait-discusion">
+        <div class="title">
+            <h1>Llego la hora de discutir</h1>
+        </div>
+        <div class="text">
+            <p>No te preocupes por el tiempo; discute todo lo que consideres necesario con tus compañeros. Avanzaremos a la votación una vez que todos estén de acuerdo o hayan finalizado la discusión.</p>
+        </div>
+        <div class="btnNext">
+            <button id="start-vote-btn">Iniciar la votación</button>
+            <p id="vote-count">0/4 jugadores listos para votar</p>
+        </div>
+    </div>
+</div>
+
+<main id="main-container" style="display: none">
+    <div class="title">
+        <h2>Elige a quién deseas votar</h2>
+    </div>
+    <div class="time">
+        <h3 id="countdown">
+            1:00<!-- Tiempo pintado dinamicamente -->
+        </h3>
+    </div>
     <div class="players">
         <!-- los jugadores se pintan de forma dinamica -->
     </div>

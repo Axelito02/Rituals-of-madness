@@ -1,6 +1,6 @@
 // Función para iniciar la cámara del dispositivo
-
-async function startCamera() {
+// Función para iniciar la cámara del dispositivo
+const startCamera = async () => {
   try {
     const stream = await navigator.mediaDevices.getUserMedia({ video: true });
     const videoElement = document.getElementById('camera');
@@ -23,7 +23,27 @@ async function startCamera() {
 
         if (code) {
           console.log('Código QR detectado:', code.data);
-          // window.open(code.data, '_blank')
+          switch(code.data) {
+            case 'Campesino':
+              // Redirigir a la página correspondiente para el rol de Campesino
+              window.location.href = 'campesino.html';
+              break;
+            case 'Martyr':
+              // Redirigir a la página correspondiente para el rol de Martyr
+              window.location.href = 'martyr.html';
+              break;
+            // Añade más casos para otros roles aquí
+            case 'OtroRol1':
+              window.location.href = 'otro_rol1.html';
+              break;
+            case 'OtroRol2':
+              window.location.href = 'otro_rol2.html';
+              break;
+            // Agrega más casos según sea necesario
+            default:
+              // Si el código no coincide con ninguna de las condiciones anteriores, no hace nada
+              break;
+          }
         }
         requestAnimationFrame(scanFrame);
       };
@@ -35,6 +55,4 @@ async function startCamera() {
   }
 }
 
-window.onload = function() {
-  startCamera();
-};
+window.onload = () => startCamera();

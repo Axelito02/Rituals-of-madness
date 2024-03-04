@@ -1,0 +1,44 @@
+body, html {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow: hidden;
+  background-color: #0D1229;
+}
+
+main {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+.imgProfile{
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  padding: 3vh;
+
+  img{
+    border: 2px solid;
+    border-color: #040a24;
+  }
+}
+
+.btnConfirm {
+  padding: 1vh;
+  border-radius: 1vh;
+}
+
+.usernameInput{
+  padding: 1vh;
+  border-radius: 1vh;
+  border: none;
+}
