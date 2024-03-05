@@ -6,18 +6,64 @@
     <title>Rituals of madness</title>
     <link rel="shortcut icon" href="./src/assets/Img/FaviconOjo.png" type="image/x-icon">
     <link rel="stylesheet" href="./src/style.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.3.2/socket.io.js"></script>
     <script src="./src/index.js" type="module"></script>
   </head>
   <body>
-    <main id="containerProfile">
-      <div class="imgProfile">
+    <main>
+      <div class="containerProfile">
+
+        <div class="imgProfile">
           <!-- Pinta una imagen de forma dinamica -->
         </div>
-        <div class="Username">
-            <input class="usernameInput"  type="text" id="" placeholder="Nombre">
-            <button class="btnConfirm">Aceptar</button>
+
+        <div class="allImages">
+          <!-- Pinta las imagenes de forma dinamica -->
         </div>
+
+        <div class="Username">
+          <div>
+            <input class="usernameInput"  type="text" placeholder="Nombre">
+          </div>
+          <div>
+            <button class="btnConfirm">Aceptar</button>
+          </div>
+        </div>
+
+        <div class="infoRole">
+
+          <div class="tagAndRole">
+            <div class="tag">
+              <p>Tu rol es:</p>
+            </div>
+            <div class="containerRole">
+              <div>
+                <p class="assignedRole">
+                  <!-- Pintan de forma dinamica el rol asignado -->
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="divBtnHide">
+            <button class="btnHide">Ocultar</button>
+          </div>
+        </div>
+
+        <div class="roleCharacteristics">
+          <div class="skill">
+            <p>
+              <!-- Pintan la habilidad de forma dinamica -->
+            </p>
+          </div>
+          
+          <div class="descriptionRole">
+            <p>
+              <!-- Pintan de forma dinamica la descripcióno -->
+            </p>
+          </div>
+        </div>
+      </div>
     </main>
   </body>
-
 </html>

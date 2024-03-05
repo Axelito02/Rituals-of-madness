@@ -1,4 +1,6 @@
-// Función para iniciar la cámara del dispositivo
+// Conexion con socket.io
+const socket = io();
+
 // Función para iniciar la cámara del dispositivo
 const startCamera = async () => {
   try {
@@ -23,27 +25,8 @@ const startCamera = async () => {
 
         if (code) {
           console.log('Código QR detectado:', code.data);
-          switch(code.data) {
-            case 'Campesino':
-              // Redirigir a la página correspondiente para el rol de Campesino
-              window.location.href = 'campesino.html';
-              break;
-            case 'Martyr':
-              // Redirigir a la página correspondiente para el rol de Martyr
-              window.location.href = 'martyr.html';
-              break;
-            // Añade más casos para otros roles aquí
-            case 'OtroRol1':
-              window.location.href = 'otro_rol1.html';
-              break;
-            case 'OtroRol2':
-              window.location.href = 'otro_rol2.html';
-              break;
-            // Agrega más casos según sea necesario
-            default:
-              // Si el código no coincide con ninguna de las condiciones anteriores, no hace nada
-              break;
-          }
+          socket.emit("QrRole", code.data)
+          window.location.href = "http://localhost:5050/waiting/";
         }
         requestAnimationFrame(scanFrame);
       };

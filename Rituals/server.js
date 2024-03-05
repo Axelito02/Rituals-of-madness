@@ -1,3 +1,6 @@
+// Contador para el número de conexiones
+let connectionCount = 0;
+
 // Lineas de código para el server
 const express = require("express");
 
@@ -19,3 +22,24 @@ expressApp.use('/qr', staticQR)
 expressApp.use('/waiting', staticWaitingRoom)
 expressApp.use('/roles', staticRoles)
 expressApp.use('/votes', staticVote)
+
+// Manejar conexión de Socket.IO
+ioServer.on('connection', (socket) => {
+    console.log('Nueva conexión detectada.', socket.id);
+
+    // Evento que recibe los datos del contenido del QR escaneado
+        socket.on("QrRole", (role) => {
+        console.log(role);
+
+        // Evento que envia los datos del QR escaneado hacia las otras pantallas (carpetas)
+        socket.broadcast.emit("rolAsignado", role)
+
+        // Redirigir al cliente a la nueva ruta
+        socket.emit('redirect', '/waiting');
+    })
+
+        // Manejar redirección
+        socket.on('redirect', (destination) => {
+            socket.emit('redirect', destination);
+        });
+});
