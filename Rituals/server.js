@@ -25,21 +25,32 @@ expressApp.use('/votes', staticVote)
 
 // Manejar conexión de Socket.IO
 ioServer.on('connection', (socket) => {
-    console.log('Nueva conexión detectada.', socket.id);
+    console.log(connectionCount,'conexiónes detectadas');
+
+    // Incrementar el contador de conexiones
+    connectionCount++;
 
     // Evento que recibe los datos del contenido del QR escaneado
-        socket.on("QrRole", (role) => {
+    socket.on("QrRole", (role) => {
         console.log(role);
 
         // Evento que envia los datos del QR escaneado hacia las otras pantallas (carpetas)
         socket.broadcast.emit("rolAsignado", role)
-
-        // Redirigir al cliente a la nueva ruta
-        socket.emit('redirect', '/waiting');
     })
 
-        // Manejar redirección
-        socket.on('redirect', (destination) => {
-            socket.emit('redirect', destination);
-        });
+    // Obtener los datos de la pantalla roles
+    socket.on('userData', (data) => {
+        console.log(data);
+        socket.broadcast.emit('userInfo', data);
+    });
+
+    // Manejar desconexión
+    socket.on('disconnect', () => {
+        console.log('Usuario desconectado');
+        // Decrementar el contador de conexiones al desconectar un usuario
+        connectionCount--;
+
+        // // Emitir el número actualizado de conexiones
+        socket.broadcast.emit('connectionCount', connectionCount);
+    });
 });

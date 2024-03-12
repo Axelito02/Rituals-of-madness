@@ -14,7 +14,6 @@ main {
   height: 100%;
   display: flex;
   justify-content: center;
-  align-items: center;
   overflow: hidden;
 }
 
@@ -64,6 +63,7 @@ p{
 }
 
 .imgDiv{
+  width: 100%;
 
   img{
     border: 3px solid;
@@ -95,7 +95,10 @@ p{
 }
 
 .allImages {
+  display: grid;
+  grid-template-columns: auto auto auto;
   position: fixed;
+  gap: 0.5rem;
   top: 0;
   left: 0;
   width: 100%;
@@ -108,6 +111,6 @@ p{
 }
 
 .allImages img {
-  max-width: 80%;
-  max-height: 80%;
+  max-width: 100%;
+  max-height: 100%;
 }

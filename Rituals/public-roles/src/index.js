@@ -10,7 +10,11 @@ document.addEventListener("DOMContentLoaded", () => {
     const assignedRoleContainer = document.querySelector(".assignedRole");
     const skillContainer = document.querySelector(".skill p");
     const descriptionContainer = document.querySelector(".descriptionRole p");
-    
+    const usernameInput = document.querySelector(".usernameInput");
+    const btnConfirm = document.querySelector(".btnConfirm");
+    let selectedImageSrc = null;
+    let data = {};
+
     socket.on("rolAsignado", (rol)=>{
         console.log(rol);
         // Buscar el rol asignado en el array infoRoles
@@ -30,6 +34,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const cargarImagenAleatoria = () => {
         const randomIndex = Math.floor(Math.random() * imgProfiles.length);
         const randomImage = imgProfiles[randomIndex].image;
+        selectedImageSrc = randomImage;
         const imgElement = document.createElement("img");
         imgElement.src = randomImage;
         imgElement.classList.add("profile-image");
@@ -39,8 +44,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Función para mostrar todas las imágenes al hacer clic
     const mostrarTodasLasImagenes = () => {
-        allImagesContainer.style.display = "flex";
-        allImagesContainer.style.flexWrap = "wrap";
+        allImagesContainer.style.display = "grid";
         allImagesContainer.style.alignContent = "center";
         allImagesContainer.innerHTML = "";
         imgProfiles.forEach(profile => {
@@ -65,7 +69,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // Evento para seleccionar una imagen del array al hacer clic en ella
     allImagesContainer.addEventListener("click", (event) => {
         if (event.target.classList.contains("profile-image")) {
-            const selectedImageSrc = event.target.src;
+            selectedImageSrc = event.target.src;
             imgProfileContainer.innerHTML = ""; // Limpiar contenedor
             const selectedImgElement = document.createElement("img");
             selectedImgElement.src = selectedImageSrc;
@@ -74,4 +78,13 @@ document.addEventListener("DOMContentLoaded", () => {
             allImagesContainer.style.display = "none";
         }
     });
+
+    btnConfirm.addEventListener("click", () => {
+            // Guardar el valor del input y la imagen seleccionada en el objeto 'data'
+            data.username = usernameInput.value;
+            data.image = selectedImageSrc;
+            console.log(data);
+            // Enviar los datos a través de socket.io
+            socket.emit("userData", data);
+        });
 })

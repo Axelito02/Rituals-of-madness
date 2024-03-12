@@ -1,11 +1,9 @@
-import playersGame from './assets/playes.js'
+// Conexion con socket.io
+const socket = io();
 
-// Cosas por hacer importante
-  // - limitar la cantidad de clicks detectar la cantidad de jugadores (conexiones en la sección actual)
-  // - Agregar condición para desabilitar el botón a los jugadores que ya decidieron seguir
-  // - Hacer el contador de 1 minuto para la votación
+// Array de prueba para ver si pintaba correctamente
+// import playersGame from './assets/playes.js'
 
-let timeVote = 60;
 let clickCount = 0;
 
 // Obtener referencias a los elementos relevantes
@@ -32,6 +30,13 @@ const voteCountText = document.getElementById('vote-count');
 document.addEventListener("DOMContentLoaded", () => {
   const container = document.querySelector(".players");
 
+  socket.on("userInfo", (userInfo) => {
+    console.log(userInfo);
+    // Recibir el objeto userInfo del servidor y crear un contenedor de jugador con su información
+    const playerContainer = createPlayerContainer(userInfo);
+    container.appendChild(playerContainer);
+  });
+
   // Función para crear un contenedor de jugador con su información
   const createPlayerContainer = (playerData) => {
     const containerPlayer = document.createElement("div");
@@ -39,35 +44,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const imgPlayer = document.createElement("img");
     imgPlayer.classList.add("player-img");
-    imgPlayer.src = playerData.img;
+    imgPlayer.src = playerData.image;
 
     const playerName = document.createElement("h4");
-    playerName.textContent = playerData.name;
+    playerName.textContent = playerData.username;
+    
     containerPlayer.appendChild(imgPlayer);
     containerPlayer.appendChild(playerName);
 
-    containerPlayer.appendChild(imgPlayer);
     return containerPlayer;
   }
-
-  // Crear contenedores para cada jugador e insertarlos en el contenedor principal
-  playersGame.forEach(playerData => {
-    const playerContainer = createPlayerContainer(playerData);
-    container.appendChild(playerContainer);
-  });
-
-  //   // Función para actualizar el contador de tiempo
-  //     const updateTimer = () => {
-  //     const countdownElement = document.getElementById('countdown');
-  //     const minutes = Math.floor(timeVote / 10);
-  //     const seconds = timeVote % 60;
-  //     const formattedTime = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
-  //     countdownElement.textContent = formattedTime;
-
-  //     // Reducir el tiempo restante en cada intervalo
-  //     if (timeVote > 0) {
-  //         timeVote--;
-  //         setTimeout(updateTimer, 1000); // Llama a esta función nuevamente después de 1 segundo
-  //     }
-  // };
 });

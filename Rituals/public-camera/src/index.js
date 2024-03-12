@@ -25,11 +25,13 @@ const startCamera = async () => {
 
         if (code) {
           console.log('Código QR detectado:', code.data);
-          socket.emit("QrRole", code.data)
-          window.location.href = "http://localhost:5050/waiting/";
+          socket.emit("QrRole", code.data);
+          setTimeout(() => {
+            window.location.href = "http://localhost:5050/waiting/";
+          }, 1000);
         }
-        requestAnimationFrame(scanFrame);
-      };
+        requestAnimationFrame(scanFrame)
+      }
 
       scanFrame();
     });
