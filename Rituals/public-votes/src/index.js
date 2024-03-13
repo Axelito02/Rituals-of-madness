@@ -1,44 +1,84 @@
 // Conexion con socket.io
 const socket = io();
 
-// Array de prueba para ver si pintaba correctamente
-// import playersGame from './assets/playes.js'
-
 let clickCount = 0;
+let playersVoted = 0;
+let totalPlayers = 0; // Se actualizará desde el servidor
+let timerInterval;
 
 // Obtener referencias a los elementos relevantes
 const startVoteBtn = document.getElementById('start-vote-btn');
 const discussionTimeSection = document.getElementById('discussion-time');
 const mainContainerSection = document.getElementById('main-container');
 const voteCountText = document.getElementById('vote-count');
+const countdownElement = document.getElementById('countdown');
 
-  // Agregar evento de clic al botón "Iniciar la votación"
-  startVoteBtn.addEventListener('click', () => {
+// Escuchar el evento para actualizar el total de jugadores desde el servidor
+socket.on('updateTotalPlayers', (total) => {
+    totalPlayers = total;
+});
 
-  clickCount++;
-  voteCountText.textContent = `${clickCount}/4 jugadores listos para votar`;
+// Agregar evento de clic al botón "Iniciar la votación"
+startVoteBtn.addEventListener('click', () => {
+    clickCount++;
+    voteCountText.textContent = `${clickCount}/${totalPlayers} jugadores listos para votar`;
 
-  // Si se han hecho al menos 4 clics, ocultar la sección de discusión y mostrar la sección principal
-
-  if (clickCount >= 4) {
-      discussionTimeSection.style.display = 'none';
-      mainContainerSection.style.display = 'block';
+    // Si se han hecho al menos el mismo número de conexiones que el total de jugadores, iniciar la votación
+    if (clickCount >= totalPlayers) {
+        discussionTimeSection.style.display = 'none';
+        mainContainerSection.style.display = 'block';
+        startTimer();
     }
 });
 
-// Función que se ejecuta apenas cargue todo los recursos del DOM
+// Función para iniciar el contador de tiempo
+const startTimer = () => {
+    // Duración del contador en segundos
+    let countdownDuration = 60; // Por ejemplo, 1 minuto
+
+    // Función para actualizar el contador de tiempo
+    const updateCountdown = () => {
+        // Mostrar el tiempo restante en formato mm:ss
+        const minutes = Math.floor(countdownDuration / 60);
+        const seconds = countdownDuration % 60;
+        countdownElement.textContent = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+
+        // Reducir el tiempo restante en 1 segundo
+        countdownDuration--;
+
+        // Si el tiempo llega a cero o todos los jugadores han votado, detener el contador
+        if (countdownDuration < 0 || playersVoted >= totalPlayers) {
+            clearInterval(timerInterval); // Detener el contador
+
+            // Si todos los jugadores han votado, puedes realizar acciones adicionales aquí
+            if (playersVoted >= totalPlayers) {
+                console.log('Todos los jugadores han votado. La votación ha terminado.');
+            }
+        }
+    };
+
+    // Llamar a la función de actualización del contador cada segundo
+    timerInterval = setInterval(updateCountdown, 1000);
+};
+
+// Función que se ejecuta apenas cargue todos los recursos del DOM
 document.addEventListener("DOMContentLoaded", () => {
-  const container = document.querySelector(".players");
+    const container = document.querySelector(".players");
 
-  socket.on("userInfo", (userInfo) => {
-    console.log(userInfo);
-    // Recibir el objeto userInfo del servidor y crear un contenedor de jugador con su información
-    const playerContainer = createPlayerContainer(userInfo);
-    container.appendChild(playerContainer);
-  });
+    socket.on("userInfo", (userInfo) => {
+        // Recibir el objeto userInfo del servidor y crear un contenedor de jugador con su información
+        const playerContainer = createPlayerContainer(userInfo);
+        container.appendChild(playerContainer);
+    });
+});
 
-  // Función para crear un contenedor de jugador con su información
-  const createPlayerContainer = (playerData) => {
+// Función para incrementar el contador de jugadores que han votado
+const incrementPlayersVoted = () => {
+    playersVoted++;
+};
+
+// Función para crear un contenedor de jugador con su información
+const createPlayerContainer = (playerData) => {
     const containerPlayer = document.createElement("div");
     containerPlayer.classList.add("player-container");
 
@@ -48,10 +88,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const playerName = document.createElement("h4");
     playerName.textContent = playerData.username;
-    
+
     containerPlayer.appendChild(imgPlayer);
     containerPlayer.appendChild(playerName);
 
     return containerPlayer;
-  }
-});
+};

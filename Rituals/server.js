@@ -1,5 +1,5 @@
 // Contador para el número de conexiones
-let connectionCount = 0;
+let connectionCount = 1;
 
 // Lineas de código para el server
 const express = require("express");
@@ -25,7 +25,7 @@ expressApp.use('/votes', staticVote)
 
 // Manejar conexión de Socket.IO
 ioServer.on('connection', (socket) => {
-    console.log(connectionCount,'conexiónes detectadas');
+    console.log(connectionCount, 'conexiones detectadas');
 
     // Incrementar el contador de conexiones
     connectionCount++;
@@ -34,9 +34,9 @@ ioServer.on('connection', (socket) => {
     socket.on("QrRole", (role) => {
         console.log(role);
 
-        // Evento que envia los datos del QR escaneado hacia las otras pantallas (carpetas)
-        socket.broadcast.emit("rolAsignado", role)
-    })
+        // Evento que envía los datos del QR escaneado hacia la conexión que lo solicitó
+        socket.emit("rolAsignado", role);
+    });
 
     // Obtener los datos de la pantalla roles
     socket.on('userData', (data) => {
@@ -50,7 +50,8 @@ ioServer.on('connection', (socket) => {
         // Decrementar el contador de conexiones al desconectar un usuario
         connectionCount--;
 
-        // // Emitir el número actualizado de conexiones
+        // Emitir el número actualizado de conexiones
         socket.broadcast.emit('connectionCount', connectionCount);
     });
 });
+

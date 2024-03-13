@@ -1,6 +1,8 @@
 // Conexion con socket.io
 const socket = io();
 
+let qrDetected = false; // Bandera para indicar si se detectó un código QR
+
 // Función para iniciar la cámara del dispositivo
 const startCamera = async () => {
   try {
@@ -23,12 +25,11 @@ const startCamera = async () => {
         const imageData = context.getImageData(0, 0, videoWidth, videoHeight);
         const code = jsQR(imageData.data, imageData.width, imageData.height);
 
-        if (code) {
+        if (code && !qrDetected) { // Solo ejecutar si aún no se ha detectado un QR
+          qrDetected = true; // Establecer la bandera en verdadero
           console.log('Código QR detectado:', code.data);
           socket.emit("QrRole", code.data);
-          setTimeout(() => {
-            window.location.href = "http://localhost:5050/waiting/";
-          }, 1000);
+          window.location.href = "http://localhost:5050/waiting/";
         }
         requestAnimationFrame(scanFrame)
       }

@@ -30,6 +30,15 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
+    // Escuchar el evento 'miRolAsignado' y mostrar el rol asignado solo para el jugador actual
+    socket.on("miRolAsignado", (data) => {
+        // Comparar el ID del jugador actual con el ID de esta conexión de Socket.io
+        if (data.playerID === socket.id) {
+            // Mostrar la información del rol asignado solo para el jugador actual
+            mostrarInformacionDelRol(data.rol);
+        }
+    });
+
     // Función para cargar una imagen aleatoria del array
     const cargarImagenAleatoria = () => {
         const randomIndex = Math.floor(Math.random() * imgProfiles.length);
@@ -79,6 +88,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
+    // Evento para confirmar la selección del nombre de usuario y la imagen
     btnConfirm.addEventListener("click", () => {
             // Guardar el valor del input y la imagen seleccionada en el objeto 'data'
             data.username = usernameInput.value;
