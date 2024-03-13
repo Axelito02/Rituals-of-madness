@@ -31,12 +31,12 @@ ioServer.on('connection', (socket) => {
     connectionCount++;
 
     // Evento que recibe los datos del contenido del QR escaneado
-    socket.on("QrRole", (role) => {
-        console.log(role);
+    // socket.on("QrRole", (role) => {
+    //     console.log(role);
 
-        // Evento que envía los datos del QR escaneado hacia la conexión que lo solicitó
-        socket.emit("rolAsignado", role);
-    });
+    //     // Evento que envía los datos del QR escaneado hacia la conexión que lo solicitó
+    //     socket.emit("rolAsignado", role);
+    // });
 
     // Obtener los datos de la pantalla roles
     socket.on('userData', (data) => {

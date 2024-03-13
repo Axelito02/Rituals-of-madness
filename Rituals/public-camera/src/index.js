@@ -1,3 +1,6 @@
+// Definir la URL de NGROK
+const NGROK = " https://10ab-181-50-53-55.ngrok-free.app/waiting/";
+
 // Conexion con socket.io
 const socket = io();
 
@@ -6,7 +9,15 @@ let qrDetected = false; // Bandera para indicar si se detectó un código QR
 // Función para iniciar la cámara del dispositivo
 const startCamera = async () => {
   try {
-    const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+    let constraints;
+    // Verificar si el dispositivo tiene cámara trasera y establecer las restricciones adecuadas
+    if (navigator.mediaDevices.getSupportedConstraints().facingMode) {
+      constraints = { video: { facingMode: "environment" } }; // Cámara trasera
+    } else {
+      constraints = { video: { facingMode: "user" } }; // Cámara frontal
+    }
+
+    const stream = await navigator.mediaDevices.getUserMedia(constraints);
     const videoElement = document.getElementById('camera');
     videoElement.srcObject = stream;
 
@@ -28,8 +39,12 @@ const startCamera = async () => {
         if (code && !qrDetected) { // Solo ejecutar si aún no se ha detectado un QR
           qrDetected = true; // Establecer la bandera en verdadero
           console.log('Código QR detectado:', code.data);
-          socket.emit("QrRole", code.data);
-          window.location.href = "http://localhost:5050/waiting/";
+          
+          // Guardar el rol en sessionStorage
+          sessionStorage.setItem('qrRole', code.data);
+
+          // Redirigir a la página de NGROK
+          window.location.href = NGROK;
         }
         requestAnimationFrame(scanFrame)
       }
@@ -41,4 +56,4 @@ const startCamera = async () => {
   }
 }
 
-window.onload = () => startCamera();
+window.onload = () => startCamera();

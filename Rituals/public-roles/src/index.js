@@ -1,3 +1,6 @@
+// Definir la URL de NGROK
+const NGROK = " https://10ab-181-50-53-55.ngrok-free.app/votes/";
+
 // Conexion con socket.io
 const socket = io();
 
@@ -10,13 +13,16 @@ document.addEventListener("DOMContentLoaded", () => {
     const assignedRoleContainer = document.querySelector(".assignedRole");
     const skillContainer = document.querySelector(".skill p");
     const descriptionContainer = document.querySelector(".descriptionRole p");
+    const roleCharacteristicsContainer = document.querySelector(".roleCharacteristics");
+    const containerRole = document.querySelector(".containerRole");
     const usernameInput = document.querySelector(".usernameInput");
     const btnConfirm = document.querySelector(".btnConfirm");
+    const btnHide = document.querySelector(".btnHide");
     let selectedImageSrc = null;
     let data = {};
 
-    socket.on("rolAsignado", (rol)=>{
-        console.log(rol);
+    // Función para mostrar la información del rol asignado
+    const mostrarInformacionDelRol = (rol) => {
         // Buscar el rol asignado en el array infoRoles
         const roleInfo = infoRoles.find(roleInfo => roleInfo.rol === rol);
         if (roleInfo) {
@@ -28,16 +34,16 @@ document.addEventListener("DOMContentLoaded", () => {
             // Si no se encuentra el rol, mostrar un mensaje de error o realizar alguna acción apropiada
             console.error("No se encontró información para el rol asignado:", rol);
         }
-    });
+    };
 
-    // Escuchar el evento 'miRolAsignado' y mostrar el rol asignado solo para el jugador actual
-    socket.on("miRolAsignado", (data) => {
-        // Comparar el ID del jugador actual con el ID de esta conexión de Socket.io
-        if (data.playerID === socket.id) {
-            // Mostrar la información del rol asignado solo para el jugador actual
-            mostrarInformacionDelRol(data.rol);
-        }
-    });
+    // Obtener el rol del sessionStorage
+    const storedRole = sessionStorage.getItem('qrRole');
+    if (storedRole) {
+        // Mostrar la información del rol asignado
+        mostrarInformacionDelRol(storedRole);
+    } else {
+        console.error("No se encontró un rol en el sessionStorage.");
+    }
 
     // Función para cargar una imagen aleatoria del array
     const cargarImagenAleatoria = () => {
@@ -97,4 +103,17 @@ document.addEventListener("DOMContentLoaded", () => {
             // Enviar los datos a través de socket.io
             socket.emit("userData", data);
         });
-})
+
+    // Evento para ocultar/mostrar la información del rol asignado
+    btnHide.addEventListener("click", () => {
+        if (roleCharacteristicsContainer.style.display === "none" || roleCharacteristicsContainer.style.display === "") {
+            containerRole.style.display = "block";
+            roleCharacteristicsContainer.style.display = "block";
+            btnHide.textContent = "Ocultar";
+        } else {
+            containerRole.style.display = "none";
+            roleCharacteristicsContainer.style.display = "none";
+            btnHide.textContent = "Mostrar";
+        }
+   });
+});

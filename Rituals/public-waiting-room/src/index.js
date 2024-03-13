@@ -1,3 +1,5 @@
+const NGROK = ` https://10ab-181-50-53-55.ngrok-free.app/roles`
+
 // Conexion con socket.io
 const socket = io();
 
@@ -46,7 +48,7 @@ document.addEventListener("DOMContentLoaded", () => {
            countdown = setInterval(() => {
                if (time === 0) {
                    clearInterval(countdown);
-                   window.location.href = "http://localhost:5050/roles/";
+                   window.location.href = NGROK;
 
                } else {
                    onlinePlayersContainer.innerHTML = `<img src="./src/assets/Img/conection4.png" alt="feedbackConnectionPlayer"> <p> ${count} jugadores conectados</p> <p> La partida empieza en ${time} segundos</p>`;

@@ -1,3 +1,5 @@
+const NGROK = ` https://10ab-181-50-53-55.ngrok-free.app`
+
 // Conexion con socket.io
 const socket = io();
 
