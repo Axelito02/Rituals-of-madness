@@ -1,3 +1,6 @@
+// Importar la instancia de Firestore que hemos creado
+const fireStoreDB = require("./firebase-config").default;
+
 // Contador para el número de conexiones
 let connectionCount = 1;
 
@@ -8,7 +11,7 @@ const expressApp = express();
 const PORT = 5050;
 
 const httpServer = expressApp.listen(PORT);
-const { Server} = require("socket.io");
+const { Server } = require("socket.io");
 const ioServer = new Server(httpServer);
 
 // Asignar carpetas estaticas
@@ -42,6 +45,9 @@ ioServer.on('connection', (socket) => {
     socket.on('userData', (data) => {
         console.log(data);
         socket.broadcast.emit('userInfo', data);
+
+        // Agregar los datos a Firestore
+        fireStoreDB.addNewDocumentTo(data, 'jugadores-actuales'); // Asumiendo que 'data' contiene los datos que deseas agregar
     });
 
     // Manejar desconexión
@@ -54,4 +60,3 @@ ioServer.on('connection', (socket) => {
         socket.broadcast.emit('connectionCount', connectionCount);
     });
 });
-
