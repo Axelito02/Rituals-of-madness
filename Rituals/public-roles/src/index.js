@@ -45,36 +45,37 @@ document.addEventListener("DOMContentLoaded", () => {
         console.error("No se encontró un rol en el sessionStorage.");
     }
 
-    // Función para cargar una imagen aleatoria del array
-    const cargarImagenAleatoria = () => {
-        const randomIndex = Math.floor(Math.random() * imgProfiles.length);
-        const randomImage = imgProfiles[randomIndex].image;
-        selectedImageSrc = randomImage;
+    // Función para mostrar todas las imágenes al hacer clic en la imagen actual
+const mostrarTodasLasImagenes = () => {
+    allImagesContainer.style.display = "grid";
+    allImagesContainer.style.alignContent = "center";
+    allImagesContainer.innerHTML = "";
+    // Filtrar las imágenes para excluir la imagen por defecto
+    const imagesToDisplay = imgProfiles.filter(profile => profile.image !== "./src/assets/Img/Default.png");
+    imagesToDisplay.forEach(profile => {
+        const imgDiv = document.createElement("div");
+        imgDiv.classList.add("imgDiv")
         const imgElement = document.createElement("img");
-        imgElement.src = randomImage;
+        imgElement.src = profile.image;
         imgElement.classList.add("profile-image");
-        imgProfileContainer.innerHTML = "";
-        imgProfileContainer.appendChild(imgElement);
-    }
+        imgDiv.appendChild(imgElement); // Agregar la imagen como hijo del div
+        allImagesContainer.appendChild(imgDiv); // Agregar el div al contenedor
+    });
+}
 
-    // Función para mostrar todas las imágenes al hacer clic
-    const mostrarTodasLasImagenes = () => {
-        allImagesContainer.style.display = "grid";
-        allImagesContainer.style.alignContent = "center";
-        allImagesContainer.innerHTML = "";
-        imgProfiles.forEach(profile => {
-            const imgDiv = document.createElement("div");
-            imgDiv.classList.add("imgDiv")
-            const imgElement = document.createElement("img");
-            imgElement.src = profile.image;
-            imgElement.classList.add("profile-image");
-            imgDiv.appendChild(imgElement); // Agregar la imagen como hijo del div
-            allImagesContainer.appendChild(imgDiv); // Agregar el div al contenedor
-        });
-    }
+// Función para cargar la imagen por defecto
+const cargarImagenPorDefecto = () => {
+    selectedImageSrc = "./src/assets/Img/Default.png"; // Ruta de la imagen por defecto
+    const imgElement = document.createElement("img");
+    imgElement.src = selectedImageSrc;
+    imgElement.classList.add("profile-image");
+    imgProfileContainer.innerHTML = "";
+    imgProfileContainer.appendChild(imgElement);
+}
 
-    // Cargar una imagen aleatoria al cargar el DOM
-    cargarImagenAleatoria();
+// Llamar a la función para cargar la imagen por defecto al cargar el DOM
+cargarImagenPorDefecto();
+
 
     // Evento para cargar una imagen aleatoria al hacer clic en la imagen actual
     imgProfileContainer.addEventListener("click", () => {

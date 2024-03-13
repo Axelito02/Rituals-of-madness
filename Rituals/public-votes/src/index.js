@@ -1,4 +1,5 @@
-const NGROK = ` https://10ab-181-50-53-55.ngrok-free.app`
+// Definir la URL de NGROK
+const NGROK = "https://10ab-181-50-53-55.ngrok-free.app";
 
 // Conexion con socket.io
 const socket = io();
@@ -93,6 +94,16 @@ const createPlayerContainer = (playerData) => {
 
     containerPlayer.appendChild(imgPlayer);
     containerPlayer.appendChild(playerName);
+
+    // Agregar evento de clic al contenedor del jugador para permitirle votar
+    containerPlayer.addEventListener('click', () => {
+        if (!playerData.voted) { // Verificar si el jugador no ha votado aún
+            // Emitir el voto del jugador al servidor
+            socket.emit('vote', playerData.username);
+            playerData.voted = true; // Marcar al jugador como que ya votó
+            incrementPlayersVoted(); // Incrementar el contador de jugadores que han votado
+        }
+    });
 
     return containerPlayer;
 };

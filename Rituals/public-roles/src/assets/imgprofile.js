@@ -41,6 +41,9 @@ const imgProfiles = [
     {
         image: "./src/assets/Img/Personaje14.png"
     },
+    {
+        image: "./src/assets/Img/Default.png"
+    },
 ]
 
 export default imgProfiles
