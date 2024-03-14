@@ -1,5 +1,5 @@
 // Definir la URL de NGROK
-const NGROK = " https://10ab-181-50-53-55.ngrok-free.app/waiting/";
+const NGROK = "https://5faf-186-168-130-109.ngrok-free.app/waiting/";
 
 // Conexion con socket.io
 const socket = io();

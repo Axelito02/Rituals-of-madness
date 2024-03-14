@@ -128,10 +128,6 @@ body, html {
         }
       }
   }
-
-  .selected{
-    transform: scale(1.1);
-  }
   
   /* Estilos del contenedor del botón */
   .btnConfirm{
@@ -166,35 +162,4 @@ body, html {
 /* Firefox */
 * {
   scrollbar-width: none;
-}
-
-/* Estilos del contenedor del resultado de la votación */
-#resultado-votacion {
-  text-align: center;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  z-index: 9999; /* Asegura que esté por encima de otros elementos */
-  background-color: rgba(0, 0, 0, 0.5); /* Fondo semi-transparente */
-  backdrop-filter: blur(5px); /* Efecto de desenfoque */
-}
-
-/* Estilos del texto del resultado de la votación */
-#resultado-texto {
-  margin-bottom: 10px; /* Ajusta según sea necesario */
-}
-
-/* Estilos de la imagen del jugador más votado */
-#imagen-votada {
-  width: 200px; /* Ajusta según sea necesario */
-  height: auto;
-  border-radius: 50%;
-  margin-top: 10px; /* Ajusta según sea necesario */
 }

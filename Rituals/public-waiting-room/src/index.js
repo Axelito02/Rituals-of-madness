@@ -1,4 +1,4 @@
-const NGROK = ` https://10ab-181-50-53-55.ngrok-free.app/roles`
+const NGROK = `https://5faf-186-168-130-109.ngrok-free.app/roles`
 
 // Conexion con socket.io
 const socket = io();

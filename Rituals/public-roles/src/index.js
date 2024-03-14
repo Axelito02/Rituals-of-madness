@@ -1,7 +1,5 @@
-// import fireStoreDB from '../firebase-config.js';
-
 // Definir la URL de NGROK
-const NGROK = " https://10ab-181-50-53-55.ngrok-free.app/votes/";
+const NGROK = "https://5faf-186-168-130-109.ngrok-free.app/waitingVoting/";
 
 // Conexion con socket.io
 const socket = io();
@@ -102,12 +100,12 @@ cargarImagenPorDefecto();
             // Guardar el valor del input y la imagen seleccionada en el objeto 'data'
             data.username = usernameInput.value;
             data.image = selectedImageSrc;
-            data.rol = qrRole;
+            data.rol = storedRole;
             console.log(data);
             // Enviar los datos a través de socket.io
             socket.emit("userData", data);
-            fireStoreDB.addNewDocumentTo(newUser, 'jugadores-actuales');
-            console.log('Added to firebase');
+
+            window.location.href = NGROK
         });
 
     // Evento para ocultar/mostrar la información del rol asignado
