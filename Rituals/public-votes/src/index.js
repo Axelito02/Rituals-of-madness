@@ -1,12 +1,10 @@
 // Definir la URL de NGROK
-const NGROK = "https://5faf-186-168-130-109.ngrok-free.app";
-// const fireStoreDB = require("./firebase-config");
+const NGROK = "https://55fd-190-130-97-32.ngrok-free.app";
 // Conexion con socket.io
 const socket = io();
 
-let clickCount = 0;
-let playersVoted = 0;
-let totalPlayers = 0; // Se actualizará desde el servidor
+let playersVoted = 0; // Se actualizará desde el servidor
+let totalPlayers = 0; 
 let timerInterval;
 
 // Obtener referencias a los elementos relevantes
@@ -19,8 +17,7 @@ const btnConfirm = document.getElementById('btnConfirm');
 
 // Función para iniciar el contador de tiempo
 const startTimer = () => {
-    // Duración del contador en segundos
-    let countdownDuration = 60; // Por ejemplo, 1 minuto
+    let countdownDuration = 60;
     console.log("Starting timer...");
 
     // Función para actualizar el contador de tiempo
@@ -33,9 +30,28 @@ const startTimer = () => {
         if (countdownDuration === 0 || playersVoted >= totalPlayers) {
             clearInterval(timerInterval); // Detener el contador
 
-            // Si todos los jugadores han votado, puedes realizar acciones adicionales aquí
+            console.log('La votación ha terminado.');
+            // Si todos los jugadores han votado
             if (playersVoted >= totalPlayers) {
-                console.log('Todos los jugadores han votado. La votación ha terminado.');
+                console.log('Todos los jugadores han votado.');
+            } else {
+                // Si nadie ha votado, votar por un jugador al azar
+                if (selectedPlayer === null) {
+                    // Obtener un jugador al azar
+                    const randomIndex = Math.floor(Math.random() * totalPlayers);
+                    const randomPlayer = data[randomIndex];
+
+                    // Simular el voto por ese jugador
+                    selectedPlayer = randomPlayer;
+                    console.log('Voting for random player: ' + selectedPlayer.username);
+
+                    // Emitir el voto al servidor
+                    socket.emit("VotedPlayer", selectedPlayer);
+
+                    // Deshabilitar el botón de votar después de votar
+                    btnConfirm.classList.add("disabled");
+                    btnConfirm.disabled = true;
+                }
             }
         }
     };
@@ -43,6 +59,7 @@ const startTimer = () => {
     // Llamar a la función de actualización del contador cada segundo
     timerInterval = setInterval(updateCountdown, 1000);
 };
+
 
 // Función que se ejecuta apenas cargue todos los recursos del DOM
 document.addEventListener("DOMContentLoaded", () => {
@@ -63,7 +80,7 @@ document.addEventListener("DOMContentLoaded", () => {
             totalPlayers = data.length;
             console.log(totalPlayers);
 
-            //Verificar si el jugador es un Oráculo y mostrar al jugador protegido
+            //Verificar si el jugador es un Oráculo y mostrar al jugador Protegido
             const rolJugador = sessionStorage.getItem('qrRole');
             if (rolJugador === 'Oraculo') {
                 // Encontrar al jugador protegido
@@ -74,6 +91,8 @@ document.addEventListener("DOMContentLoaded", () => {
                     alert('No se encontró un jugador protegido.');
                 }
             }
+            
+            //Verificar si el jugador es un Secuaz y mostrar al jugador Traidor
             if (rolJugador === 'Secuaz') {
                 // Encontrar al jugador traidor
                 const jugadorTraidor = data.find(jugador => jugador.rol === 'Traidor');
@@ -107,7 +126,7 @@ const createPlayerContainer = (playerData) => {
     containerPlayer.appendChild(playerName);
 
     containerPlayer.addEventListener('click', () => {
-        // Si hay un jugador seleccionado actualmente, deselecciónalo
+        // Si hay un jugador seleccionado actualmente, se deselecciona
         if (selectedPlayer !== null) {
             const prevSelectedContainer = document.querySelector(".player-container.selected");
             prevSelectedContainer.classList.remove("selected");
@@ -119,6 +138,8 @@ const createPlayerContainer = (playerData) => {
 
         // Resaltar al jugador seleccionado
         containerPlayer.classList.add("selected");
+
+         
     });
 
     return containerPlayer;
@@ -129,8 +150,13 @@ btnConfirm.addEventListener("click", () => {
     if (selectedPlayer !== null) {
         socket.emit("VotedPlayer", selectedPlayer);
         console.log('Voted ' + selectedPlayer.username);
-    }
-    else if (selectedPlayer == null){
+        // Deshabilitar el botón de votar después de votar
+
+        // Deshabilitar el botón de votar si ya se ha votado
+            btnConfirm.classList.add("disabled");
+
+        btnConfirm.disabled = true;
+    } else {
         console.log('Error voting');
     }
 });
@@ -147,10 +173,27 @@ socket.on('VotingCount', (voted) => {
     const resultadoVotacion = contarVotos(voted);
     console.log(`El jugador más votado es ${resultadoVotacion.jugadorMasVotado.username} con ${resultadoVotacion.maxVotos} votos.`);
 
+    //Pierde si el rol votado era Protegido o Traidor
     if (resultadoVotacion.jugadorMasVotado.rol === "Protegido" || resultadoVotacion.jugadorMasVotado.rol === "Traidor") {
         const ganarPerderElement = document.getElementById('ganar-perder');
-        ganarPerderElement.textContent = `¡Ha triunfado el mal!`;
+        ganarPerderElement.textContent = "¡Ha triunfado el mal!";
+        const perdedoresElement = document.getElementById('perdedores');
+        perdedoresElement.textContent = "Solo sobreviven Traitor y Lackey";
     }
+
+    //Sigue si NO se votó a Protegido  o Traidor
+    //Lo ideal es que borre al votado del array de jugadores, se repite la votación en ronda 2 y luego en 3
+    if (resultadoVotacion.jugadorMasVotado.rol !== "Protegido" && resultadoVotacion.jugadorMasVotado.rol !== "Traidor") {
+        const ganarPerderElement = document.getElementById('ganar-perder');
+        ganarPerderElement.textContent = "¡El festival continua!";
+        const perdedoresElement = document.getElementById('perdedores');
+        perdedoresElement.textContent = "Sigue votando para saber como termina...";
+    }
+
+     // Eliminar al jugador más votado del endpoint si su rol no es "Protegido" ni "Traidor"
+    // if (resultadoVotacion.jugadorMasVotado.rol !== "Protegido" || resultadoVotacion.jugadorMasVotado.rol !== "Traidor") {
+    //     eliminarJugador(resultadoVotacion.jugadorMasVotado.username);
+    // } //aun no funciona
 
     // Mostrar el resultado de la votación solo una vez terminada la votación
     const resultadoTextoElement = document.getElementById('resultado-texto');
@@ -160,67 +203,13 @@ socket.on('VotingCount', (voted) => {
     resultadoRolElement.textContent = `Su rol era ${resultadoVotacion.jugadorMasVotado.rol}.`;
 
     const imagenVotadaElement = document.getElementById('imagen-votada');
-    // Aquí debes establecer la URL de la imagen votada
-    // Puedes acceder a la imagen del jugador más votado desde el objeto resultadoVotacion
-    // Por ejemplo, resultadoVotacion.jugadorMasVotado.image
     imagenVotadaElement.src = resultadoVotacion.jugadorMasVotado.image;
-    // Establecer estilos adicionales para la imagen, como blanco y negro
     imagenVotadaElement.style.filter = 'grayscale(100%)';
 
     // Mostrar el contenedor resultado-votacion
     const resultadoVotacionElement = document.getElementById('resultado-votacion');
     resultadoVotacionElement.style.display = 'flex';
-
-    // Eliminar al jugador más votado del endpoint si su rol no es "Protegido" ni "Traidor"
-    if (resultadoVotacion.jugadorMasVotado.rol !== "Protegido" || resultadoVotacion.jugadorMasVotado.rol !== "Traidor") {
-        eliminarJugadorDelEndpoint(resultadoVotacion.jugadorMasVotado);
-    }
 });
-
-// Función para eliminar al jugador más votado del endpoint si no es "Protegido" o "Traidor"
-const eliminarJugadorDelEndpoint = async (jugadorMasVotado) => {
-    try {
-        const jugadores = await obtenerJugadoresDelEndpoint(); // Obtener los jugadores del endpoint
-        const jugadorAEliminar = jugadores.find(jugador => jugador.username === jugadorMasVotado.username);
-
-        if (!jugadorAEliminar) {
-            console.error(`No se encontró al jugador ${jugadorMasVotado.username}.`);
-            return;
-        }
-
-        const response = await fetch('/jugadores', {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(jugadorAEliminar)
-        });
-
-        if (response.ok) {
-            console.log(`El jugador ${jugadorAEliminar.username} ha sido eliminado exitosamente.`);
-        } else {
-            console.error('Error al intentar eliminar al jugador.');
-        }
-    } catch (error) {
-        console.error('Se produjo un error al intentar eliminar al jugador:', error);
-    }
-};
-
-const obtenerJugadoresDelEndpoint = async () => {
-    try {
-        const response = await fetch('/jugadores'); // Obtener la lista de jugadores del endpoint
-        if (!response.ok) {
-            throw new Error('Error al obtener los jugadores del endpoint.');
-        }
-        const jugadores = await response.json();
-        return jugadores;
-    } catch (error) {
-        console.error('Error al obtener los jugadores del endpoint:', error);
-        return [];
-    }
-};
-
-
 
 // Función para contar los votos totales y el jugador más votado
 const contarVotos = (votos) => {

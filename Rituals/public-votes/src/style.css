@@ -42,12 +42,6 @@ body, html {
         background-color: #D9D9D9;
         color: #000000;
 
-        &:hover{
-          border-bottom: solid 2px;
-          border-color: #272727;
-          background-color: #5c5c5c;
-          color: white;
-        }
       }
   }
 }
@@ -90,7 +84,7 @@ body, html {
     justify-content: center;
     gap: 2vh;
     padding: 2vh;
-    margin: 4vh 0;
+    margin: 2vh 0;
     max-height: 60vh;
     overflow-y: auto;
 
@@ -130,33 +124,37 @@ body, html {
   }
 
   .selected{
+    z-index: 2;
     transform: scale(1.1);
+    outline: 2px solid red;
   }
   
-  /* Estilos del contenedor del botón */
-  .btnConfirm{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 3vh;
-    
-    /* Estilos del botón */
-      button{
-        border: none;
-        border-radius: 10vh;
-        padding: 3vh;
-        background-color: #D9D9D9;
-        color: #000000;
+/* Estilos del contenedor del botón */
+.btnConfirm {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3vh;
+  padding-top: 0;
+}
 
-        &:hover{
-          border-bottom: solid 2px;
-          border-color: #272727;
-          background-color: #5c5c5c;
-          color: white;
-        }
-      }
-  }
+/* Estilos del botón */
+.btnVotacion {
+  border: none;
+  border-radius: 10vh;
+  padding: 3vh;
+  background-color: #D9D9D9;
+  color: #000000;
+}
+
+/* Estilos del botón deshabilitado */
+.btnVotacion:disabled {
+  border-bottom: solid 2px;
+  border-color: #272727;
+  background-color: #5c5c5c;
+  color: rgb(157, 157, 157);
+}
 }
 
 ::-webkit-scrollbar {

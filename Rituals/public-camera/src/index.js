@@ -1,10 +1,10 @@
 // Definir la URL de NGROK
-const NGROK = "https://5faf-186-168-130-109.ngrok-free.app/waiting/";
+const NGROK = "https://55fd-190-130-97-32.ngrok-free.app/waiting/";
 
 // Conexion con socket.io
 const socket = io();
 
-let qrDetected = false; // Bandera para indicar si se detectó un código QR
+let qrDetected = false; // Indicar si se detectó un código QR
 
 // Función para iniciar la cámara del dispositivo
 const startCamera = async () => {
@@ -36,8 +36,8 @@ const startCamera = async () => {
         const imageData = context.getImageData(0, 0, videoWidth, videoHeight);
         const code = jsQR(imageData.data, imageData.width, imageData.height);
 
-        if (code && !qrDetected) { // Solo ejecutar si aún no se ha detectado un QR
-          qrDetected = true; // Establecer la bandera en verdadero
+        if (code && !qrDetected) {
+          qrDetected = true;
           console.log('Código QR detectado:', code.data);
           
           // Guardar el rol en sessionStorage

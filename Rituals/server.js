@@ -1,7 +1,11 @@
-const NGROK = 'https://5faf-186-168-130-109.ngrok-free.app'
+const NGROK = 'https://55fd-190-130-97-32.ngrok-free.app'
 // Contador para el número de conexiones
 let connectionCount = 1;
+let playersConnected = 0;
 let voteConnection = 1;
+
+const CONNECTION_LIMIT = 4;
+let connectionLimitReached = false; 
 
 // Lineas de código para el server
 const express = require("express");
@@ -52,10 +56,29 @@ let totalVotes = 1
 ioServer.on('connection', (socket) => {
     const url = socket.request.headers.referer;
 
+    if (connectionCount > CONNECTION_LIMIT || connectionLimitReached) {
+        console.log('Se ha alcanzado el límite de conexiones permitidas');
+        socket.emit('connectionLimitReached', 'Se ha alcanzado el límite de conexiones permitidas');
+        socket.disconnect(true); // Desconectar al cliente
+        return; // Salir de la función para evitar el procesamiento adicional
+    }
+
     console.log(connectionCount, 'conexiones detectadas');
 
     // Incrementar el contador de conexiones
     connectionCount++;
+
+    if (url.includes(`${NGROK}/waiting`)) {
+        playersConnected++
+        console.log(playersConnected, 'listos para jugar');
+        socket.broadcast.emit('playersConnected', playersConnected);
+    }
+
+    if (playersConnected === CONNECTION_LIMIT) {
+        // Enviar mensaje "IniciaJuego" por socket
+        console.log('Inicia juego')
+        socket.broadcast.emit('iniciaJuego', 'iniciaJuego');
+    }
 
     // Obtener los datos de la pantalla roles
     socket.on('userData', (data) => {
@@ -69,7 +92,7 @@ ioServer.on('connection', (socket) => {
         console.log(voteConnection-1, 'listos para votar');
     }
 
-    if (connectionCount === voteConnection) {
+    if ( voteConnection>= connectionCount) {
             // Enviar mensaje "iniciaVotacion" por socket
             console.log('Inicia votacion')
             socket.broadcast.emit('iniciaVotacion', 'iniciaVotacion');
@@ -90,18 +113,26 @@ ioServer.on('connection', (socket) => {
         res.json(jugadores);
     });
 
+    socket.on('TiempoTerminado', () => {
+        // Aquí puedes calcular los resultados de la votación
+        const resultadoVotacion = contarVotos(voted);
+
+        // Emitir los resultados de la votación de vuelta al cliente
+        socket.emit('ResultadosVotacion', resultadoVotacion);
+    }); 
+
     socket.on('VotedPlayer', (data) => {
         voted.push(data)
         totalVotes++
         console.log(data.username + ' fue votado');
         console.log((totalVotes - 1) + ' han votado');
         setTimeout(() => {
-        if(totalVotes === connectionCount){
-            console.log(voted);
+            if(totalVotes === connectionCount){
+                console.log(voted);
                 // Esta es la función que se ejecutará después de cierto tiempo
                 socket.broadcast.emit('VotingCount', voted)
             }
-            }, 5000);
+        }, 5000);
     });
     
 });

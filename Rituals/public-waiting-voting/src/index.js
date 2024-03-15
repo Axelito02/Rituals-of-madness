@@ -1,5 +1,5 @@
 // Definir la URL de NGROK
-const NGROK = "https://5faf-186-168-130-109.ngrok-free.app/votes/";
+const NGROK = "https://55fd-190-130-97-32.ngrok-free.app/votes/";
 // const fireStoreDB = require("./firebase-config");
 // Conexion con socket.io
 const socket = io();
@@ -23,5 +23,4 @@ socket.on('updateTotalPlayers', (total) => {
 socket.on("iniciaVotacion", (message) => {
     console.log(message);
     window.location.href = NGROK
-    // Aquí puedes agregar cualquier lógica que desees ejecutar cuando la votación inicie
 });

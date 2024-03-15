@@ -2,7 +2,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rituals of madness</title>
+    <title>Ritual of madness</title>
     <link rel="stylesheet" href="./src/style.css">
     <link rel="shortcut icon" href="./src/assets/Img/FaviconOjo.png" type="image/x-icon">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.3.2/socket.io.js"></script>
@@ -26,13 +26,14 @@
             <!-- los jugadores se pintan de forma dinámica -->
         </div>
         <div class="btnConfirm">
-            <button id="btnConfirm">Confirmar Voto</button>
+            <button class="btnVotacion" id="btnConfirm">Confirmar Voto</button>
         </div>
         <div id="resultado-votacion" style="display: none;">
             <img id="imagen-votada" src="" alt="Imagen votada" style="filter: grayscale(100%);">
             <h3 id="resultado-texto"></h3>
             <h2 id="resultado-rol"></h2>
             <h1 id="ganar-perder"></h1>
+            <h3 id="perdedores"></h3>
         </div>
 
 </main>

@@ -1,4 +1,4 @@
-const NGROK = `https://5faf-186-168-130-109.ngrok-free.app/roles`
+const NGROK = `https://55fd-190-130-97-32.ngrok-free.app/roles`
 
 // Conexion con socket.io
 const socket = io();
@@ -6,7 +6,7 @@ const socket = io();
 import tipsGame from './assets/Tips/tips.js';
 import onlinePlayers from './assets/conectionCounts/conections.js';
 
-let playerMinimums = 4;
+let playerMinimums = 8;
 let countdown;
 let time = 5;
 
@@ -16,9 +16,19 @@ document.addEventListener("DOMContentLoaded", () => {
     const onlinePlayersContainer = document.querySelector('.imgConnection');
 
     // Escuchar el evento 'connectionCount' del servidor y actualizar la imagen y el mensaje
-    socket.on('connectionCount', (count) => {
-        console.log('Número de conexiones:', count);
-        displayConnectionImage(count);
+    // socket.on('connectionCount', (count) => {
+    //     console.log('Número de conexiones:', count);
+    //     displayConnectionImage(count);
+    // });
+
+    socket.on("playersConnected", (message) => {
+        console.log('Número de conexiones:', message);
+        displayConnectionImage(message);
+    });
+
+    socket.on("iniciaJuego", (message) => {
+        console.log(message);
+        window.location.href = NGROK;
     });
 
     const displayRandomTip = () => {
@@ -48,7 +58,7 @@ document.addEventListener("DOMContentLoaded", () => {
            countdown = setInterval(() => {
                if (time === 0) {
                    clearInterval(countdown);
-                   window.location.href = NGROK;
+                //    window.location.href = NGROK;
 
                } else {
                    onlinePlayersContainer.innerHTML = `<img src="./src/assets/Img/conection4.png" alt="feedbackConnectionPlayer"> <p> ${count} jugadores conectados</p> <p> La partida empieza en ${time} segundos</p>`;

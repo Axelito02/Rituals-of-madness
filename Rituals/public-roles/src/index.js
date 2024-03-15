@@ -1,5 +1,5 @@
 // Definir la URL de NGROK
-const NGROK = "https://5faf-186-168-130-109.ngrok-free.app/waitingVoting/";
+const NGROK = "https://55fd-190-130-97-32.ngrok-free.app/waitingVoting/";
 
 // Conexion con socket.io
 const socket = io();
@@ -26,12 +26,10 @@ document.addEventListener("DOMContentLoaded", () => {
         // Buscar el rol asignado en el array infoRoles
         const roleInfo = infoRoles.find(roleInfo => roleInfo.rol === rol);
         if (roleInfo) {
-            // Si se encuentra el rol, actualizar los contenedores HTML con la información correspondiente
             assignedRoleContainer.textContent = rol;
             skillContainer.textContent = roleInfo.skill;
             descriptionContainer.textContent = roleInfo.description;
         } else {
-            // Si no se encuentra el rol, mostrar un mensaje de error o realizar alguna acción apropiada
             console.error("No se encontró información para el rol asignado:", rol);
         }
     };
@@ -75,7 +73,6 @@ const cargarImagenPorDefecto = () => {
 
 // Llamar a la función para cargar la imagen por defecto al cargar el DOM
 cargarImagenPorDefecto();
-
 
     // Evento para cargar una imagen aleatoria al hacer clic en la imagen actual
     imgProfileContainer.addEventListener("click", () => {
